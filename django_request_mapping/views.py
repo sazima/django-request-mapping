@@ -6,12 +6,13 @@
 
 import inspect
 from functools import wraps, update_wrapper
+from typing import Dict
 
 from django.urls import path
 from django.utils.decorators import classonlymethod
 from django.views.decorators.csrf import csrf_exempt
 
-urlpatterns = list()
+from .urls import urlpatterns
 
 
 def request_mapping(value: str, method: str = 'get'):
@@ -39,18 +40,26 @@ def request_mapping(value: str, method: str = 'get'):
     return get_func
 
 
-def register(clazz, prefix_path):
-    for method_name in dir(clazz):
-        method_func = getattr(clazz, method_name)
-        if hasattr(method_func, 'request_mapping'):
-            method_request_mapping = method_func.request_mapping
-            request_method = method_request_mapping.get('method')
-            request_path = method_request_mapping.get('value')
-            urlpatterns.append(
-                path(prefix_path + request_path, clazz.as_view({
-                    request_method: method_name
-                }))
-            )
+def register(clazz: type, prefix_path: str):
+    url_patterns_dict: Dict[str, Dict] = dict()
+    for func_name in dir(clazz):
+        func = getattr(clazz, func_name)
+        mapping = getattr(func, 'request_mapping', None)
+        if mapping:
+            request_method = mapping.get('method')
+            request_path = mapping.get('value')
+            full_path = prefix_path + request_path
+            try:
+                temp_func_name = url_patterns_dict[full_path].setdefault(request_method, func_name)
+                assert temp_func_name == func_name, "path: {} with method: {} is duplicated".format(
+                    full_path,
+                    request_method
+                )
+            except KeyError:
+                url_patterns_dict[full_path] = {request_method: func_name}
+    urlpatterns.extend([
+        path(full_path, clazz.as_view(action)) for full_path, action in url_patterns_dict.items()
+    ])
 
 
 @classonlymethod
@@ -109,7 +118,7 @@ def as_view(cls, actions=None, **initkwargs):
         # This is the bit that's different to a standard view
         for method, action in actions.items():
             handler = getattr(self, action)
-        setattr(self, method, handler)
+            setattr(self, method, handler)
 
         if hasattr(self, 'get') and not hasattr(self, 'head'):
             self.head = self.get
