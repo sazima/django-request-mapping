@@ -3,27 +3,25 @@
 @time: 2019/8/9 下午20:03
 @desc:
 """
-
-import inspect
-from functools import wraps, update_wrapper
-from typing import Dict
-
-from django.urls import path
 from django.utils.decorators import classonlymethod
 from django.views.decorators.csrf import csrf_exempt
 
-from .urls import urlpatterns
+import inspect
+from functools import wraps, update_wrapper
 
 
 def request_mapping(value: str, method: str = 'get'):
     def get_func(o: type):
+
         if inspect.isclass(o):
-            setattr(o, 'as_view', as_view)
+            o.as_view = as_view
             if value.startswith('/'):
                 prefix_path = value[1:]
             else:
                 prefix_path = value
-            register(o, prefix_path)
+            setattr(o, 'request_mapping', {
+                'value': prefix_path,
+            })
 
         else:
             setattr(o, 'request_mapping', {
@@ -38,28 +36,6 @@ def request_mapping(value: str, method: str = 'get'):
         return inner
 
     return get_func
-
-
-def register(clazz: type, prefix_path: str):
-    url_patterns_dict: Dict[str, Dict] = dict()
-    for func_name in dir(clazz):
-        func = getattr(clazz, func_name)
-        mapping = getattr(func, 'request_mapping', None)
-        if mapping:
-            request_method = mapping.get('method')
-            request_path = mapping.get('value')
-            full_path = prefix_path + request_path
-            try:
-                temp_func_name = url_patterns_dict[full_path].setdefault(request_method, func_name)
-                assert temp_func_name == func_name, "path: {} with method: {} is duplicated".format(
-                    full_path,
-                    request_method
-                )
-            except KeyError:
-                url_patterns_dict[full_path] = {request_method: func_name}
-    urlpatterns.extend([
-        path(full_path, clazz.as_view(action)) for full_path, action in url_patterns_dict.items()
-    ])
 
 
 @classonlymethod

@@ -1,8 +1,5 @@
 from django.http import JsonResponse
-
-# Create your views here.
 from django.views import View
-
 from django_request_mapping import request_mapping
 
 
@@ -10,6 +7,7 @@ from django_request_mapping import request_mapping
 class BlogView(View):
     @request_mapping(value="/hidden", method="get")
     def hidden(self, request, *args, **kwargs):
+        # request.
         return JsonResponse({
             "msg": "ok"
         })

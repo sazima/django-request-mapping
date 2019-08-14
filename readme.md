@@ -1,7 +1,22 @@
 make urlpatterns very easy to use.
 
-### Example
+#### Requirements
+```bash
+django >= 2.x
+```
 
+#### Install
+
+```python
+
+pip install django-request-mapping
+
+```
+
+
+#### QuickStart
+
+in view.py
 ```python
 from django_request_mapping import request_mapping
 
@@ -23,14 +38,33 @@ class UserView(View):
 
 ```
 
+in urls.py
+
+```python
+
+from django_request_mapping import UrlPattern
+urlpatterns = UrlPattern()
+urlpatterns.register(UserView)
+
+```
+
+run
+
 ```bash
 python manage.py runserver
 ```
 
-and request url is :
+and request urls are:
 
-post:  http://localhost:8000/user/login/
 
+```bash
 get:  http://localhost:8000/user/get_info/
-
 get: http://localhost:8000/user/get_list/1999/
+post:  http://localhost:8000/user/login/
+```
+
+
+#### example
+
+https://github.com/sazima/django-request-mapping/tree/master/request_mapping_example
+
