@@ -35,9 +35,17 @@ class UrlPattern(object):
                 except KeyError:
                     url_patterns_dict[full_path] = {request_method: func_name}
         self.urlpatterns.extend([
-            path(full_path, clazz.as_view(action)) for full_path, action in url_patterns_dict.items()
+            path(
+                self._get_full_path(full_path),
+                clazz.as_view(action)) for full_path, action in url_patterns_dict.items()
         ])
 
     def __iter__(self, *args, **kwargs):
         for item in self.urlpatterns:
             yield item
+
+    @staticmethod
+    def _get_full_path(full_path: str) -> str:
+        if full_path.startswith('/'):
+            return full_path[1:]
+        return full_path

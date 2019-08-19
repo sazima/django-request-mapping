@@ -15,19 +15,19 @@ def request_mapping(value: str, method: str = 'get'):
 
         if inspect.isclass(o):
             o.as_view = as_view
-            if value.startswith('/'):
-                prefix_path = value[1:]
-            else:
-                prefix_path = value
-            setattr(o, 'request_mapping', {
-                'value': prefix_path,
-            })
+            # todo
+            # if value.startswith('/'):
+            #     prefix_path = value[1:]
+            # else:
+            #     prefix_path = value
+            # setattr(o, 'request_mapping', {
+            #     'value': prefix_path,
+            # })
 
-        else:
-            setattr(o, 'request_mapping', {
-                'value': value,
-                'method': method
-            })
+        setattr(o, 'request_mapping', {
+            'value': value,
+            'method': method
+        })
 
         @wraps(o)
         def inner(*args, **kwargs):
