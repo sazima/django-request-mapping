@@ -12,22 +12,13 @@ from functools import wraps, update_wrapper
 
 def request_mapping(value: str, method: str = 'get'):
     def get_func(o: type):
-
-        if inspect.isclass(o):
-            o.as_view = as_view
-            # todo
-            # if value.startswith('/'):
-            #     prefix_path = value[1:]
-            # else:
-            #     prefix_path = value
-            # setattr(o, 'request_mapping', {
-            #     'value': prefix_path,
-            # })
-
         setattr(o, 'request_mapping', {
             'value': value,
             'method': method
         })
+        if inspect.isclass(o):
+            o.as_view = as_view
+            return o
 
         @wraps(o)
         def inner(*args, **kwargs):

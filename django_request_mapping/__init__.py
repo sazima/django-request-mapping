@@ -1,2 +1,2 @@
-from .views import *
+from .decorator import *
 from .route import *
