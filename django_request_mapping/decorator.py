@@ -3,14 +3,21 @@
 @time: 2019/8/9 下午20:03
 @desc:
 """
+import logging
+
 from django.utils.decorators import classonlymethod
 from django.views.decorators.csrf import csrf_exempt
 
 import inspect
-from functools import wraps, update_wrapper
+from functools import update_wrapper
+
+logger = logging.getLogger('request_mapping.decorator')
 
 
 def request_mapping(value: str, method: str = 'get'):
+    if not value.startswith('/'):
+        logger.warning("values should startswith / ")
+
     def get_func(o: type):
         setattr(o, 'request_mapping', {
             'value': value,
@@ -18,13 +25,7 @@ def request_mapping(value: str, method: str = 'get'):
         })
         if inspect.isclass(o):
             o.as_view = as_view
-            return o
-
-        @wraps(o)
-        def inner(*args, **kwargs):
-            return o(*args, **kwargs)
-
-        return inner
+        return o
 
     return get_func
 
