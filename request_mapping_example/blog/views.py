@@ -28,7 +28,7 @@ class BlogView(View):
 
 @request_mapping("/user")
 class UserView(View):
-    @request_mapping("info")
+    @request_mapping("/info")
     def get_user_info(self, request, *args, **kwargs):
         data = request.GET
         return JsonResponse(data)
