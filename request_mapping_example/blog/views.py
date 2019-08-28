@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views import View
 
 from django_request_mapping import request_mapping
@@ -28,7 +28,20 @@ class BlogView(View):
 
 @request_mapping("/user")
 class UserView(View):
-    @request_mapping("/info")
+    @request_mapping("/info/")
     def get_user_info(self, request, *args, **kwargs):
         data = request.GET
         return JsonResponse(data)
+
+
+@request_mapping("/course")
+class CourseView(View):
+    @request_mapping("/")
+    def get_list(self, request, *args, **kwargs):
+        return HttpResponse("ok")
+
+    @request_mapping("/<int:code>")
+    def get_by_code(self, request, code):
+        return JsonResponse({
+            'code': code
+        })
