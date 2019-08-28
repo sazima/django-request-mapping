@@ -18,10 +18,6 @@ def request_mapping(value: str, method: str = 'get'):
         logger.warning("values should startswith / ")
 
     def get_func(o: type, v: str):
-        if inspect.isclass(o):
-            if v.startswith('/'):
-                v = v[1:]
-
         setattr(o, 'request_mapping', {
             'value': v,
             'method': method

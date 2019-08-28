@@ -15,15 +15,16 @@ class Urls(object):
 
 class UrlPattern(list):
     urlpatterns = list()
-    prefix_paths = list()
+    class_paths = list()
 
     def register(self, clazz):
-        clazz = self._get_true_class(clazz)
         class_request_mapping = getattr(clazz, 'request_mapping', None)
         assert class_request_mapping is not None, 'view class should use request_mapping decorator.'
-        prefix_path = class_request_mapping.get('value', '')
-        if prefix_path and prefix_path in self.prefix_paths:
+        # path value on class decorator
+        class_path = class_request_mapping.get('value', '')
+        if class_path and class_path in self.class_paths:
             raise RuntimeError('duplicated request_mapping value')
+
         url_patterns_dict: Dict[str, Dict] = dict()
         for func_name in dir(clazz):
             func = getattr(clazz, func_name)
@@ -31,16 +32,18 @@ class UrlPattern(list):
             if not mapping:
                 continue
             request_method = mapping.get('method')
-            request_path = mapping.get('value')
-            full_path = prefix_path + request_path
-            try:
+            # path value on method decorator
+            method_path = mapping.get('value')
+            full_path = class_path + method_path
+            if full_path in url_patterns_dict:
                 temp_func_name = url_patterns_dict[full_path].setdefault(request_method, func_name)
                 assert temp_func_name == func_name, "path: {} with method: {} is duplicated".format(
                     full_path,
                     request_method
                 )
-            except KeyError:
+            else:
                 url_patterns_dict[full_path] = {request_method: func_name}
+
         self.update_urlpatterns(clazz, url_patterns_dict)
 
     def update_urlpatterns(self, clazz, url_patterns_dict):
@@ -56,16 +59,18 @@ class UrlPattern(list):
 
     @staticmethod
     def _get_full_path(full_path: str) -> str:
+        # Remove redundant slants
+        full_path = full_path.replace('//', '/', 1)
         if full_path.startswith('/'):
             return full_path[1:]
         return full_path
 
-    @staticmethod
-    def _get_true_class(clazz):
-        if hasattr(clazz, '__wrapped__'):
-            clazz = getattr(clazz, '__wrapped__')
-        return clazz
-
     @property
     def urls(self) -> Urls:
+        """
+        make to support:
+            pattern = UrlPattern()
+            pattern.register(UserView)
+            urlpatterns = [path(r'', include(pattern.urls)]
+        """
         return Urls(self.urlpatterns)
