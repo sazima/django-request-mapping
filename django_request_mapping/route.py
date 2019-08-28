@@ -19,8 +19,9 @@ class UrlPattern(list):
 
     def register(self, clazz):
         clazz = self._get_true_class(clazz)
-        prefix_path = getattr(clazz, 'request_mapping', {}).get('value', '')
-
+        class_request_mapping = getattr(clazz, 'request_mapping', None)
+        assert class_request_mapping is not None, 'view class should use request_mapping decorator.'
+        prefix_path = class_request_mapping.get('value', '')
         if prefix_path and prefix_path in self.prefix_paths:
             raise RuntimeError('duplicated request_mapping value')
         url_patterns_dict: Dict[str, Dict] = dict()
