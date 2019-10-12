@@ -14,15 +14,14 @@ logger = logging.getLogger('request_mapping.decorator')
 
 
 def request_mapping(value: str, method: str = 'get'):
-    if not value.startswith('/'):
-        logger.warning("values should startswith / ")
-
     def get_func(o: type, v: str):
         setattr(o, 'request_mapping', {
             'value': v,
             'method': method
         })
         if inspect.isclass(o):
+            if not value.startswith('/'):
+                logger.warning("values should startswith / ")
             o.as_view = as_view
         return o
 

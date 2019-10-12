@@ -3,7 +3,7 @@
 @time: 2019/8/14 下午21:00
 @desc:
 """
-from typing import Dict
+from typing import Dict, Iterable, Any
 
 from django.urls import path
 
@@ -29,7 +29,7 @@ class UrlPattern(list):
         for func_name in dir(clazz):
             func = getattr(clazz, func_name)
             mapping = getattr(func, 'request_mapping', None)
-            if not mapping:
+            if mapping is None:
                 continue
             request_method = mapping.get('method')
             # path value on method decorator
@@ -74,3 +74,12 @@ class UrlPattern(list):
             urlpatterns = [path(r'', include(pattern.urls)]
         """
         return Urls(self.urlpatterns)
+
+    def append(self, value: Any):
+        return self.urlpatterns.append(value)
+
+    def extend(self, iterable: Iterable[Any]):
+        return self.urlpatterns.extend(iterable)
+
+    def reverse(self):
+        return self.urlpatterns.reverse()
