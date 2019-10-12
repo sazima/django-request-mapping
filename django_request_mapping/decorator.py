@@ -6,6 +6,7 @@
 import inspect
 import logging
 from functools import update_wrapper, partial
+from typing import Any
 
 from django.utils.decorators import classonlymethod
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +15,7 @@ logger = logging.getLogger('request_mapping.decorator')
 
 
 def request_mapping(value: str, method: str = 'get'):
-    def get_func(o: type, v: str):
+    def get_func(o: Any, v: str):
         setattr(o, 'request_mapping', {
             'value': v,
             'method': method
@@ -110,7 +111,3 @@ def as_view(cls, actions=None, **initkwargs):
     view.initkwargs = initkwargs
     view.actions = actions
     return csrf_exempt(view)
-
-
-if __name__ == '__main__':
-    pass
