@@ -33,6 +33,10 @@ class UserView(View):
         data = request.GET
         return JsonResponse(data)
 
+    @request_mapping("/info/", method="post")
+    def update(self, request):
+        return JsonResponse({})
+
 
 @request_mapping("/course")
 class CourseView(View):
