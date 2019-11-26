@@ -16,10 +16,7 @@ logger = logging.getLogger('request_mapping.decorator')
 
 def request_mapping(value: str, method: str = 'get'):
     def get_func(o: Any, v: str):
-        setattr(o, 'request_mapping', {
-            'value': v,
-            'method': method
-        })
+        setattr(o, 'request_mapping', RequestMapping(v, method))
         if inspect.isclass(o):
             if not value.startswith('/'):
                 logger.warning("values should startswith / ")
@@ -111,3 +108,9 @@ def as_view(cls, actions=None, **initkwargs):
     view.initkwargs = initkwargs
     view.actions = actions
     return csrf_exempt(view)
+
+
+class RequestMapping:
+    def __init__(self, path, method):
+        self.path = path
+        self.method = method

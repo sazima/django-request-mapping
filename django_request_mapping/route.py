@@ -7,6 +7,8 @@ from typing import Dict, Iterable, Any
 
 from django.urls import path
 
+from .decorator import RequestMapping
+
 
 class Urls(object):
     def __init__(self, urlpatterns: list):
@@ -18,25 +20,27 @@ class UrlPattern(list):
     class_paths = list()
 
     def register(self, clazz):
-        class_request_mapping = getattr(clazz, 'request_mapping', None)
+        class_request_mapping: RequestMapping = getattr(clazz, 'request_mapping', None)
         assert class_request_mapping is not None, 'view class should use request_mapping decorator.'
         # path value on class decorator
-        class_path = class_request_mapping.get('value', '')
+        class_path = class_request_mapping.path
         if class_path and class_path in self.class_paths:
             raise RuntimeError('duplicated request_mapping value')
 
         url_patterns_dict: Dict[str, Dict] = dict()
+
         for func_name in dir(clazz):
             func = getattr(clazz, func_name)
-            mapping = getattr(func, 'request_mapping', None)
+            mapping: RequestMapping = getattr(func, 'request_mapping', None)
             if mapping is None:
                 continue
-            request_method = mapping.get('method')
+            request_method = mapping.method
             # path value on method decorator
-            method_path = mapping.get('value')
+            method_path = mapping.path
             full_path = class_path + method_path
             if full_path in url_patterns_dict:
                 temp_func_name = url_patterns_dict[full_path].setdefault(request_method, func_name)
+                # check if method and path are duplicated
                 assert temp_func_name == func_name, "path: {} with method: {} is duplicated".format(
                     full_path,
                     request_method

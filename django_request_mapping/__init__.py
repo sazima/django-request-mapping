@@ -1,2 +1,4 @@
-from .decorator import *
-from .route import *
+from .decorator import request_mapping
+from .route import UrlPattern
+
+__version__ = '0.0.5'
