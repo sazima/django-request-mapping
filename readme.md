@@ -2,7 +2,7 @@ make urlpatterns very easy to use.
 
 #### Requirements
 ```bash
-django >= 2.x
+django == 2.x
 ```
 
 #### Install
@@ -16,15 +16,15 @@ pip install django-request-mapping
 
 #### QuickStart
 
-in view.py
+- view.py
 ```python
 from django_request_mapping import request_mapping
 
 
-@request_mapping(value="/user")
+@request_mapping("/user")
 class UserView(View):
 
-    @request_mapping(value="/get_info/")
+    @request_mapping("/get_info/")
     def get_user_info_by_token(self, request, *args, **kwargs):
         return HttpResponse("ok")
 
@@ -32,13 +32,13 @@ class UserView(View):
     def some_others(self, request, year, *args, **kwargs):
         return HttpResponse("ok")
         
-    @request_mapping(value="/login/", method="post")
+    @request_mapping("/login/", method="post")
     def login(self, request, *args, **kwargs):
         return HttpResponse("ok")
 
 ```
 
-in urls.py
+- urls.py
 
 ```python
 
@@ -64,7 +64,7 @@ post:  http://localhost:8000/user/login/
 ```
 
 
-#### example
+#### Full Example
 
 https://github.com/sazima/django-request-mapping/tree/master/request_mapping_example
 
