@@ -111,6 +111,6 @@ def as_view(cls, actions=None, **initkwargs):
 
 
 class RequestMapping:
-    def __init__(self, path, method):
-        self.path = path
+    def __init__(self, value, method):
+        self.value = value
         self.method = method
