@@ -28,10 +28,10 @@ class UserView(View):
     def get_user_info_by_token(self, request, *args, **kwargs):
         return HttpResponse("ok")
 
-    @request_mapping(value="/get_list/<int:year>/")
+    @request_mapping("/get_list/<int:year>/")
     def some_others(self, request, year, *args, **kwargs):
         return HttpResponse("ok")
-        
+
     @request_mapping("/login/", method="post")
     def login(self, request, *args, **kwargs):
         return HttpResponse("ok")
