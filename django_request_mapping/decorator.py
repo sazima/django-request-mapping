@@ -15,6 +15,7 @@ logger = logging.getLogger('request_mapping.decorator')
 
 
 def request_mapping(value: str, method: str = 'get'):
+    # todo: type annotation error
     def get_func(o: type(View), v: str):
         setattr(o, 'request_mapping', RequestMapping(v, method))
         if inspect.isclass(o):
