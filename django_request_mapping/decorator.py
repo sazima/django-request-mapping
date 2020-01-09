@@ -6,16 +6,16 @@
 import inspect
 import logging
 from functools import update_wrapper, partial
-from typing import Any
 
 from django.utils.decorators import classonlymethod
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger('request_mapping.decorator')
 
 
 def request_mapping(value: str, method: str = 'get'):
-    def get_func(o: Any, v: str):
+    def get_func(o: type(View), v: str):
         setattr(o, 'request_mapping', RequestMapping(v, method))
         if inspect.isclass(o):
             if not value.startswith('/'):
@@ -111,6 +111,6 @@ def as_view(cls, actions=None, **initkwargs):
 
 
 class RequestMapping:
-    def __init__(self, value, method):
-        self.value = value
-        self.method = method
+    def __init__(self, value: str, method: str):
+        self.value: str = value
+        self.method: str = method
