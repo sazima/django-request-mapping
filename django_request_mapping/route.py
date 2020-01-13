@@ -50,11 +50,10 @@ class UrlPattern(list):
         self.update_urlpatterns(clazz, url_patterns_dict)
 
     def update_urlpatterns(self, clazz, url_patterns_dict):
-        self.urlpatterns.extend([
-            path(
-                full_value,
-                clazz.as_view(action)) for full_value, action in url_patterns_dict.items()
-        ])
+        for full_value, action in url_patterns_dict.items():
+            self.urlpatterns.append(
+                path(full_value, clazz.as_view(action))
+            )
 
     def __iter__(self, *args, **kwargs):
         for item in self.urlpatterns:
