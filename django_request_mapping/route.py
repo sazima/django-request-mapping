@@ -16,7 +16,8 @@ class Urls(object):
 
 
 class UrlPattern(list):
-    urlpatterns: List[path] = list()
+    def __init__(self):
+        self.urlpatterns: List[path] = list()
 
     def register(self, clazz):
         class_request_mapping: RequestMapping = getattr(clazz, 'request_mapping', None)
