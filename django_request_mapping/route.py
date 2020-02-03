@@ -11,7 +11,7 @@ from .decorator import RequestMapping
 
 
 class Urls(object):
-    def __init__(self, urlpatterns: List[path]):
+    def __init__(self, urlpatterns):
         self.urlpatterns = urlpatterns
 
 
