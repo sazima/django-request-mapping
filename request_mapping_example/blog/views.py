@@ -4,28 +4,6 @@ from django.views import View
 from django_request_mapping import request_mapping
 
 
-@request_mapping("/blog")
-class BlogView(View):
-    @request_mapping(value="/hidden", method="get")
-    def hidden(self, request, *args, **kwargs):
-        # request.
-        return JsonResponse({
-            "msg": "ok"
-        })
-
-    @request_mapping(value="/hidden", method="post")
-    def hidden2(self, request, *args, **kwargs):
-        return JsonResponse({
-            "msg": "ok"
-        })
-
-    @request_mapping(value="/delete", method="post")
-    def delete(self, request, *args, **kwargs):
-        return JsonResponse({
-            "msg": "ok"
-        })
-
-
 @request_mapping("/user")
 class UserView(View):
     @request_mapping("/info/")
@@ -35,7 +13,15 @@ class UserView(View):
 
     @request_mapping("/info/", method="post")
     def update(self, request):
-        return JsonResponse({})
+        return JsonResponse({
+            'msg': 'ok'
+        })
+
+    @request_mapping(r'/(?P<pk>\w{5})/$', path_type='re_path', method='post')
+    def test(self, request, pk):
+        return JsonResponse({
+            "pk": pk
+        })
 
 
 @request_mapping("/course")

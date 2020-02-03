@@ -12,6 +12,12 @@ class UserTest(TestCase):
     def test_post(self):
         response = self.client.post('/api/v1/user/info/')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get('msg'), 'ok')
+
+    def test_re_path(self):
+        response = self.client.post('/api/v1/user/12345/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get('pk'), '12345')
 
 
 class CourseTest(TestCase):
