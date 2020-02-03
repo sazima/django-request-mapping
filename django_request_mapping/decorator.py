@@ -14,10 +14,17 @@ from django.views.decorators.csrf import csrf_exempt
 logger = logging.getLogger('request_mapping.decorator')
 
 
-def request_mapping(value: str, method: str = 'get'):
+def request_mapping(value: str, method: str = 'get', path_type: str = 'path'):
+    """
+    :param value: The path mapping URIs (e.g. "/myPath.do")
+    :param method:  The HTTP request methods to map to, narrowing the primary mapping:
+     get, post, head, options, put, patch, delete, trace
+    :param path_type: path or re_path
+    """
+
     # todo: type annotation error
     def get_func(o: type(View), v: str):
-        setattr(o, 'request_mapping', RequestMapping(v, method))
+        setattr(o, 'request_mapping', RequestMapping(v, method, path_type))
         if inspect.isclass(o):
             if not value.startswith('/'):
                 logger.warning("values should startswith / ")
@@ -112,6 +119,7 @@ def as_view(cls, actions=None, **initkwargs):
 
 
 class RequestMapping:
-    def __init__(self, value: str, method: str):
+    def __init__(self, value: str, method: str, path_type: str):
         self.value: str = value
         self.method: str = method
+        self.path_type = path_type
