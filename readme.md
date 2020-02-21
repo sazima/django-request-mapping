@@ -1,20 +1,23 @@
 make urlpatterns very easy to use.
 
 #### Requirements
+
 ```bash
 django == 2.x
 ```
 
 #### Install
 
+Install and update using pip:
+
+
 ```python
-pip install django-request-mapping
+pip install -U  django-request-mapping
 ```
 
 
-#### QuickStart
+#### A Simple Example
 
-- view.py
 ```python
 from django_request_mapping import request_mapping
 
@@ -43,25 +46,14 @@ class UserView(View):
 @request_mapping("/role")
 class RoleView(View):
     # ...
-```
 
-- urls.py
-
-```python
 from django_request_mapping import UrlPattern
 urlpatterns = UrlPattern()
 urlpatterns.register(UserView)
 urlpatterns.register(RoleView)
 ```
 
-run
-
-```bash
-python manage.py runserver
-```
-
 and request urls are:
-
 
 ```bash
 post:  http://localhost:8000/user/login/
