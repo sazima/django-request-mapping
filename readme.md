@@ -18,6 +18,9 @@ pip install -U  django-request-mapping
 
 #### A Simple Example
 
+
+view.py
+
 ```python
 from django_request_mapping import request_mapping
 
@@ -47,6 +50,11 @@ class UserView(View):
 class RoleView(View):
     # ...
 
+```
+
+
+urls.py
+```python
 from django_request_mapping import UrlPattern
 urlpatterns = UrlPattern()
 urlpatterns.register(UserView)

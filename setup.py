@@ -6,11 +6,11 @@ with open("readme.md", "r", encoding="utf8") as f:
 
 setup(
     name='django-request-mapping',
-    version='0.0.7',
+    version='0.0.9',
     author='wukt',
     author_email='w@wktadmin.com',
     url='https://github.com/sazima/django-request-mapping',
-    description='make django url more comfortable.',
+    description='spring-like request_mapping for django.',
     packages=['django_request_mapping'],
     long_description=readme,
     long_description_content_type="text/markdown",
