@@ -74,5 +74,5 @@ delete: http://localhost:8000/user/1/
 
 #### Full Example
 
-https://github.com/sazima/django-request-mapping/tree/master/request_mapping_example
+https://github.com/sazima/django-request-mapping/tree/master/example
 

@@ -14,6 +14,11 @@ class UserTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json().get('msg'), 'ok')
 
+    def test_group_by(self):
+        response = self.client.get('/api/v1/user/group_by_11111/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get('field_name'), '11111')
+
     def test_re_path(self):
         response = self.client.post('/api/v1/user/12345/')
         self.assertEqual(response.status_code, 200)

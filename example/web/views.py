@@ -7,7 +7,7 @@ from django_request_mapping import request_mapping
 @request_mapping("/user")
 class UserView(View):
     @request_mapping("/info/")
-    def get_user_info(self, request, *args, **kwargs):
+    def get_info(self, request):
         data = request.GET
         return JsonResponse(data)
 
@@ -16,6 +16,17 @@ class UserView(View):
         return JsonResponse({
             'msg': 'ok'
         })
+
+    @request_mapping("/delete_by_department/", method='delete')
+    def delete_by_department(self, request):
+        department_id = request.GET.get('department_id')
+        # delete
+        return JsonResponse({})
+
+    @request_mapping("/group_by_<str:field_name>/")
+    def group(self, request, field_name):
+        # User.objects.values(field_name).annotate(count=Count('id')).order_by('id').all()
+        return JsonResponse({'field_name': field_name})
 
     @request_mapping(r'/(?P<pk>\w{5})/$', path_type='re_path', method='post')
     def test(self, request, pk):
