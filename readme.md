@@ -1,10 +1,10 @@
-make urlpatterns very easy to use.
+Make urlpatterns more human-readable.
 
 #### Requirements
-
 ```bash
 django == 2.x
 ```
+notice: I haven't tested it in version 3.x, so I don't know if it is supported, if there is any result, you can tell me
 
 #### Install
 
@@ -29,11 +29,12 @@ from django_request_mapping import request_mapping
 class UserView(View):
 
     @request_mapping("/login/", method="post")
-    def login(self, request, *args, **kwargs):
+    def login(self, request):
+        data = request.POST
         return HttpResponse("ok")
 
     @request_mapping("/signup/", method="post")
-    def register(self, request, *args, **kwargs):
+    def signup(self, request):
         return HttpResponse("ok")
     
     @request_mapping("/<int:user_id>/role/")
@@ -66,6 +67,7 @@ and request urls are:
 ```bash
 post:  http://localhost:8000/user/login/
 post:  http://localhost:8000/user/signup/
+
 get:  http://localhost:8000/user/1/role/
 delete: http://localhost:8000/user/1/
 # ...
