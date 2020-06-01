@@ -6,7 +6,7 @@ with open("readme.md", "r", encoding="utf8") as f:
 
 setup(
     name='django-request-mapping',
-    version='0.0.9',
+    version='0.0.10',
     author='wukt',
     author_email='w@wktadmin.com',
     url='https://github.com/sazima/django-request-mapping',
