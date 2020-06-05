@@ -86,14 +86,20 @@ def as_view(cls, actions=None, **initkwargs):
         # eg. `self.action = 'list'` on an incoming GET request.
         self.action_map = actions
 
+        # check method allowed
+        http_method_lower = request.method.lower()
+        allowed = False
+
         # Bind methods to actions
         # This is the bit that's different to a standard view
         for method, action in actions.items():
             handler = getattr(self, action)
             setattr(self, method, handler)
+            if method == http_method_lower:
+                allowed = True
 
-        if hasattr(self, 'get') and not hasattr(self, 'head'):
-            self.head = self.get
+        if not allowed:
+            return self.http_method_not_allowed(request, *args, **kwargs)
 
         self.request = request
         self.args = args
