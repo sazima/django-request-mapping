@@ -29,6 +29,7 @@ def request_mapping(value: str, method: str = 'get', path_type: str = 'path'):
             if not value.startswith('/'):
                 logger.warning("values should startswith / ")
             o.as_view = as_view
+            o.dispatch = dispatch
         return o
 
     return partial(get_func, v=value)
@@ -86,20 +87,11 @@ def as_view(cls, actions=None, **initkwargs):
         # eg. `self.action = 'list'` on an incoming GET request.
         self.action_map = actions
 
-        # check method allowed
-        http_method_lower = request.method.lower()
-        allowed = False
-
         # Bind methods to actions
         # This is the bit that's different to a standard view
         for method, action in actions.items():
             handler = getattr(self, action)
-            setattr(self, method, handler)
-            if method == http_method_lower:
-                allowed = True
-
-        if not allowed:
-            return self.http_method_not_allowed(request, *args, **kwargs)
+            setattr(self, '_request_mapping_%s_' % method, handler)
 
         self.request = request
         self.args = args
@@ -122,6 +114,16 @@ def as_view(cls, actions=None, **initkwargs):
     view.initkwargs = initkwargs
     view.actions = actions
     return csrf_exempt(view)
+
+
+def dispatch(self, request, *args, **kwargs):
+    # much same as Django's dispatch
+    self.request = request
+    if request.method.lower() in self.http_method_names:
+        handler = getattr(self, '_request_mapping_%s_' % request.method.lower(), self.http_method_not_allowed)
+    else:
+        handler = self.http_method_not_allowed
+    return handler(request, *args, **kwargs)
 
 
 class RequestMapping:
