@@ -9,6 +9,7 @@ class UserView(View):
     @request_mapping("/info/")
     def get_info(self, request):
         data = request.GET
+        self.get()  # test
         return JsonResponse(data)
 
     @request_mapping("/info/", method="post")
@@ -33,6 +34,16 @@ class UserView(View):
         return JsonResponse({
             "pk": pk
         })
+
+    # It doesn't support the following code. You must use a decorator
+    def get(self):
+        print('this test test')
+        return 'ok>>>>>>>>>>>>>>>>>>>>>>>>>>.'
+
+    # It doesn't support the following code. You must use a decorator
+    def delete(self):
+        print('this test test')
+        return "ok>>>>>>>>>>>>>>"
 
 
 @request_mapping("/course")

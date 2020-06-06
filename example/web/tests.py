@@ -24,6 +24,10 @@ class UserTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json().get('pk'), '12345')
 
+    def test_method_not_allowed(self):
+        response = self.client.delete('/api/v1/user/info/')
+        self.assertEqual(response.status_code, 405)
+
 
 class CourseTest(TestCase):
     def test_get(self):
