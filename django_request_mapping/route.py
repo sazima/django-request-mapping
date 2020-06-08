@@ -56,11 +56,11 @@ class UrlPattern(list):
         for (path_type, full_value), action in url_patterns_dict.items():
             if path_type == 'path':
                 self.urlpatterns.append(
-                    path(full_value, clazz.as_view(action))
+                    path(full_value, clazz.as_django_request_mapping_view(action))
                 )
             elif path_type == 're_path':
                 self.urlpatterns.append(
-                    re_path(full_value, clazz.as_view(action))
+                    re_path(full_value, clazz.as_django_request_mapping_view(action))
                 )
             else:
                 raise RuntimeError('not a valid path_type')

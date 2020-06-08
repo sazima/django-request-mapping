@@ -28,15 +28,15 @@ def request_mapping(value: str, method: str = 'get', path_type: str = 'path'):
         if inspect.isclass(o):
             if not value.startswith('/'):
                 logger.warning("values should startswith / ")
-            o.as_view = as_view
-            o.dispatch = dispatch
+            o.as_django_request_mapping_view = as_django_request_mapping_view
+            o.django_request_mapping_dispatch = django_request_mapping_dispatch
         return o
 
     return partial(get_func, v=value)
 
 
 @classonlymethod
-def as_view(cls, actions=None, **initkwargs):
+def as_django_request_mapping_view(cls, actions=None, **initkwargs):
     """
     Because of the way class based views create a closure around the
     instantiated view, we need to totally reimplement `.as_view`,
@@ -98,14 +98,14 @@ def as_view(cls, actions=None, **initkwargs):
         self.kwargs = kwargs
 
         # And continue as usual
-        return self.dispatch(request, *args, **kwargs)
+        return self.django_request_mapping_dispatch(request, *args, **kwargs)
 
     # take name and docstring from class
     update_wrapper(view, cls, updated=())
 
     # and possible attributes set by decorators
-    # like csrf_exempt from dispatch
-    update_wrapper(view, cls.dispatch, assigned=())
+    # like csrf_exempt from django_request_mapping_dispatch
+    update_wrapper(view, cls.django_request_mapping_dispatch, assigned=())
 
     # We need to set these on the view function, so that breadcrumb
     # generation can pick out these bits of information from a
@@ -116,7 +116,7 @@ def as_view(cls, actions=None, **initkwargs):
     return csrf_exempt(view)
 
 
-def dispatch(self, request, *args, **kwargs):
+def django_request_mapping_dispatch(self, request, *args, **kwargs):
     # much same as Django's dispatch
     self.request = request
     if request.method.lower() in self.http_method_names:
