@@ -38,3 +38,9 @@ class CourseTest(TestCase):
         response = self.client.get('/api/v1/course/1234')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json().get('code'), 1234)
+
+
+class TestApiView(TestCase):
+    def test_post(self):
+        response = self.client.post('/api/v1/test/', data={'user': 'test'})
+        self.assertEqual(response.status_code, 200)

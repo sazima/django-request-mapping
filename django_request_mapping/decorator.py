@@ -123,6 +123,10 @@ def django_request_mapping_dispatch(self, request, *args, **kwargs):
         handler = getattr(self, '_request_mapping_%s_' % request.method.lower(), self.http_method_not_allowed)
     else:
         handler = self.http_method_not_allowed
+    # fix: AttributeError: 'WSGIRequest' object has no attribute 'data' while using rest-framework
+    initialize_request = getattr(self, 'initialize_request', None)
+    if initialize_request:
+        request = initialize_request(request, *args, **kwargs)
     return handler(request, *args, **kwargs)
 
 

@@ -2,6 +2,8 @@ from django.http import JsonResponse, HttpResponse
 from django.views import View
 
 from django_request_mapping import request_mapping
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 
 @request_mapping("/user")
@@ -57,3 +59,11 @@ class CourseView(View):
         return JsonResponse({
             'code': code
         })
+
+
+@request_mapping("/test")
+class HelloView(APIView):
+    @request_mapping("/", method='post')
+    def dddd(self, request):
+        print(request.data)
+        return JsonResponse(request.data)
